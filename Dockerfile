@@ -1,18 +1,20 @@
-FROM node:20-alpine
+# Usa la imagen oficial de Node.js como base
+FROM node:latest
 
-# Establecer el directorio de trabajo dentro del contenedor
-WORKDIR /usr/src/app
+# Establece el directorio de trabajo dentro del contenedor
+WORKDIR /app
 
-# Copiar el archivo package.json y package-lock.json
-COPY package*.json ./
+# Copia los archivos de configuración y dependencias
+COPY package.json ./
+COPY package-lock.json ./
+COPY tsconfig.json ./
+COPY src ./src
 
-# Instalar las dependencias
+# Instala las dependencias de desarrollo y de producción
 RUN npm install
 
-# Copiar el resto de los archivos
-COPY . .
+# Instala TypeScript globalmente para ts-node
+RUN npm install -g typescript
 
-# build
-RUN npm run build
-
-CMD ["node", "dist/main.js"]
+# Comando para ejecutar la aplicación con ts-node
+CMD ["npm", "start"]
